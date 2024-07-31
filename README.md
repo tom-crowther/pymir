@@ -14,8 +14,8 @@ For example `fits.op = 'xyout'` assigns the value 'xyout' to the attribute op fo
 One of the unfortunate workarounds I've had to make is due to the *in* keyword in python
 Many MIRIAD tasks use this keyword, but in this package they are instead stored as the attribute name `in_` to avoid this conflict
 The value can be assigned:
-a) directly:           `fits.in_ = 'file_name.uvfits'`
-b) via special method: `fits.set_in('file_name.uvfits'`
+1) directly:           `fits.in_ = 'file_name.uvfits'`
+2) via special method: `fits.set_in('file_name.uvfits'`
 
 All other attributes can be set as normal.
 This is handled silently when running Task.interactive() in the interpreter.
@@ -40,10 +40,11 @@ from pymir import Task
 
 fits = Task('fits')
 fits.inp() # as with MIRIAD CLI this prints the available parameters
-fits.op = 'xyout'
+fits.op = 'xyout' # example of setting a parameter value
 fits.inp() # this will also print the current param values if they've been set
 
-fits.interactive() # This will run through the params one by one
+fits.interactive()
+# This will run through the params one by one
 # Allows for quick commands if you know what you need to put in already
 # Also saves having to type quotation marks for every field as they're implicit 
 # with python's input() function
@@ -51,19 +52,19 @@ fits.interactive() # This will run through the params one by one
 
 fits.help() # Prints the MIRIAD help text for the task
 
-print(Task.mirdoc) # should be equal to $MIRPDOC
-print(Task.mirbin) # should be equal to $MIRBIN
+print(Task.mirdoc)    # should be equal to $MIRPDOC
+print(Task.mirbin)    # should be equal to $MIRBIN
 print(Task.task_list) # shows the allowed tasks to initialise an object with
 ```
 The task list is based on the installed binaries located in `$MIRBIN` so anything that works on your computer should work here.
 Similarly the input parameters for tasks are looked up via the task documentation in `$MIRPDOC` so there shouldn't be discrepancies between what you can do in MIRIAD shell and here.
 
 ## Initial setup
-Nothing much required, just clone the repo and install the package
+Nothing much required, just clone the repo and install the package with `pip install -e .` in the src directory. The e is optional but I haven't tested without yet.
+The package can then be used with `from pymir.pymir import Task`
 The env variable should include $MIRPDOC and the $MIRBIN directory should be in your $PATH variable as the task list is looked up from here
 
 ## Still to do
-- Make into a proper python package since I mention it above
 - Allow selection of loud or silent failure of task
 - Including throw errors
 - Improve the help functionality to allow parameter selection specifically

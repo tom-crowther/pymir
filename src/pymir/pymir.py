@@ -24,7 +24,7 @@ class Task:
 
     task_list = task_response.stdout.decode('utf-8').splitlines()
     empty_lines = [idx for idx, val in enumerate(task_list) if '' == val]
-    task_list = ''.join(task_list[empty_lines[1]:empty_lines[2]]).split()
+    task_list = ' '.join(task_list[empty_lines[1]:empty_lines[2]]).split()
 
     def process_response(self, resp):
         if resp.returncode != 0:
@@ -88,6 +88,10 @@ class Task:
         if hasattr(self, param):
             delattr(self, param)
 
+    def clear(self):
+        for param in self.inputs:
+            if hasattr(self, param):
+                delattr(self, param)
 
     # internal methods
     def _print_taskname(self):
