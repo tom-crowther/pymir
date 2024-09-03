@@ -5,15 +5,17 @@ import subprocess
 
 class Task:
 
-    # assumes the only thing with 'miriad' in the path is miriad
-    pathlist = os.environ['PATH'].split(':')
     mirdoc = os.environ['MIRPDOC']
-    mirbin = next(filter(lambda x: 'miriad' in x, pathlist), None)
-    if mirbin is None:
-        print(f"Unable to find miriad binary directory")
-        print(f"Check that it is in $PATH env variable correctly: {pathlist}")
-        exit()
+    mirbin = os.environ['MIRBIN']
     mirhelp = os.path.join(mirbin, 'mirhelp')
+    # Below possibly redundant - not sure why I searched $PATH instead of using $MIRBIN directly
+    # assumes the only thing with 'miriad' in the path is miriad
+    # pathlist = os.environ['PATH'].split(':')
+    # mirbin = next(filter(lambda x: 'miriad' in x, pathlist), None)
+    # if mirbin is None:
+    #     print(f"Unable to find miriad binary directory")
+    #     print(f"Check that it is in $PATH env variable correctly: {pathlist}")
+    #     exit()
 
     task_response = subprocess.run([mirhelp, 'tasks'], capture_output=True)
     if task_response.returncode != 0:
@@ -68,7 +70,7 @@ class Task:
         print("Set of all available inputs for this task as reference:")
         self.inp()
         print("Now running through each option and allowing for input")
-        for param in self.inputs:
+        for param in self.task_inputs:
             self._print_param_name(param)
             param_val = input('')
             if param_val != '':
@@ -76,22 +78,24 @@ class Task:
 
     def inp(self):
         self._print_taskname()
-        for input in self.inputs:
+        for input in self.task_inputs:
             self._print_param_name(input)
             print(f"{self._get_param_str(input)}")
 
-    def help(self):
-        self.run_gen_cmd(Task.mirhelp, self.taskname)
-        pass
+    def help(self, param=None):
+        if param == None:
+            # overall task help
+            self.run_gen_cmd(Task.mirhelp, self.taskname)
+        else:
+            # keyword argument help
+            self.run_gen_cmd(Task.mirhelp, [self.taskname, '-k', param])
 
     def unset(self, param):
-        if hasattr(self, param):
-            delattr(self, param)
+        self._del_param_str(param)
 
     def clear(self):
-        for param in self.inputs:
-            if hasattr(self, param):
-                delattr(self, param)
+        for param in self.task_inputs:
+            self._del_param_str(param)
 
     # internal methods
     def _print_taskname(self):
@@ -145,6 +149,12 @@ class Task:
         else:
             return ''
 
+    def _del_param_str(self, param):
+        if param == 'in':
+            param = 'in_'
+        if hasattr(self, param):
+            delattr(self, param)
+
     def _get_task_inputs(self):
         inputs = []
         longest = 0
@@ -155,7 +165,7 @@ class Task:
                     length = len(inputs[-1])
                     if length > longest:
                         longest = length
-        self.inputs = inputs
+        self.task_inputs = inputs
         self.longest_input = longest # for formatting print output
 
     def _build_item_str(self, param):
@@ -167,7 +177,7 @@ class Task:
 
     def _build_cmd_list(self):
         cmd = [self.taskname]
-        for input in self.inputs:
+        for input in self.task_inputs:
             input_str = self._build_item_str(input)
             if input_str is not None:
                 cmd.append(input_str)
