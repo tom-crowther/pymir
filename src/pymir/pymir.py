@@ -5,8 +5,14 @@ import subprocess
 
 class Task:
 
-    mirdoc = os.environ['MIRPDOC']
-    mirbin = os.environ['MIRBIN']
+    if 'MIRPDOC' in os.environ:
+        mirdoc = os.environ['MIRPDOC']
+    else:
+        mirdoc = None
+    if 'MIRBIN' in os.environ:
+        mirbin = os.environ['MIRBIN']
+    else:
+        mirbin = ''
     mirhelp = os.path.join(mirbin, 'mirhelp')
     # Below possibly redundant - not sure why I searched $PATH instead of using $MIRBIN directly
     # assumes the only thing with 'miriad' in the path is miriad
