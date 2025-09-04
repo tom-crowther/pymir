@@ -36,7 +36,7 @@ task.go()
 ## In Live Interpreter
 The task can also be run live in an interpreter such as ipython:
 ```python
-from pymir.pymir.pymir import Task
+from pymir.pymir import Task
 
 fits = Task('fits')
 fits.inp() # as with MIRIAD CLI this prints the available parameters
@@ -66,15 +66,19 @@ Similarly the input parameters for tasks are looked up via the task documentatio
 ## Initial setup
 Nothing much required, just clone the repo and install the package with `pip install -e .` in the `src` directory. The -e is optional but I haven't tested without yet.
 The package can then be used with `from pymir.pymir import Task`
-The env variables should include $MIRPDOC and the $MIRBIN directory should be in your $PATH variable as the task list is looked up from here. This is part of the default setup for MIRIAD so if done normally, and running your python scripts through a terminal session, there should be no additional setup required.
+The env variables should include $MIRPDOC and the $MIRBIN directory, as the task list is looked up from here. This is part of the default setup for MIRIAD so if done normally, and running your python scripts through a terminal session, there should be no additional setup required.
 
 ## Still to do
 - Allow selection of loud or silent failure of task
 - Include throw errors where necessary
 - Improve the help functionality to allow parameter selection specifically
 - Prettier printout of task list
-- Improve checking for $MIRBIN, etc. instead of relying on env values
-- Improve this file for readability
+- Improve checking for $MIRBIN, etc. instead of relying on env values, or allow manual specification of these locations to remove the necessity for terminal session env variables
+- Improve this file for readability and examples
 - Add helper functions to build or convert values into miriad format where reasonably achievable
 - Look into graphical outputs and make sure they work (not yet reviewed)
 - Implement some sort of usable history like lastexit in base MIRIAD
+- Add some tests to identify if/where issues are occurring
+
+## Dependencies
+- csh - c shell, required for miriad commands, (sudo apt-get install csh)

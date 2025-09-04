@@ -62,7 +62,7 @@ class Task:
         self._set_param_str('in', in_val)
 
     def go(self):
-        print("Running task...")
+        print(f"Running task: {self.taskname}...")
         self._run_task_cmd()
 
     def interactive(self):
@@ -114,8 +114,10 @@ class Task:
             print("Stdout response:")
             print(self.stdout)
             if self.errorflag:
-                print("An error occurred during execution:")
+                print("An error or warning occurred during execution:")
                 print(self.stderr)
+                print("Task input information before err/warn:")
+                print(self.inp())
 
     def _parse_output(self):
         stderr = self.response.stderr.decode('utf-8')
@@ -172,7 +174,7 @@ class Task:
 
         if not self._check_param_str(param):
             return
-        input_str = param + '=' + self._get_param_str(param)
+        input_str = param + '=' + str(self._get_param_str(param))
         return input_str
 
     def _build_cmd_list(self):
